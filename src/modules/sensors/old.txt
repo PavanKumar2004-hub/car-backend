@@ -1,0 +1,11 @@
+import express from "express";
+import { protect } from "../../middlewares/auth.middleware.js";
+import { updateSensors } from "./sensor.controller.js";
+
+const router = express.Router();
+
+router.use(protect);
+
+router.post("/update", updateSensors);
+
+export default router;
