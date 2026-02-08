@@ -4,6 +4,7 @@ import express from "express";
 import authRoutes from "./modules/auth/auth.routes.js";
 import espRoutes from "./modules/esp/esp.routes.js";
 import memberRoutes from "./modules/members/member.routes.js";
+import notificationsRoutes from "./modules/notifications/notifications.routes.js";
 import requestRoutes from "./modules/requests/request.routes.js";
 import sensorRoutes from "./modules/sensors/sensor.routes.js";
 import vehicleRoutes from "./modules/vehicle/vehicle.routes.js";
@@ -25,5 +26,6 @@ app.use("/api/requests", requestRoutes);
 app.use("/api/members", memberRoutes);
 app.use("/api/esp", espRoutes);
 app.use("/api/vehicles", vehicleRoutes);
+app.use("/api/notifications", notificationsRoutes);
 
 export default app;

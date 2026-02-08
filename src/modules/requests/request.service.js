@@ -1,5 +1,6 @@
 import { getIO } from "../../sockets/socket.js";
 import { Member } from "../members/member.model.js";
+import { sendPushToUserIds } from "../../services/push/push.service.js";
 import { Approval } from "./approval.model.js";
 import { Request } from "./request.model.js";
 
@@ -86,6 +87,36 @@ export const createCarStartRequest = async ({ ownerId, vehicleId, alcoholLevel }
     expiresAt: request.expiresAt,
     vehicleId,
   });
+
+  const recipientUserIds = [
+    ...new Set(
+      members
+        .map((member) => member.userId?.toString())
+        .filter(Boolean)
+    ),
+  ];
+
+  if (recipientUserIds.length > 0) {
+    try {
+      await sendPushToUserIds({
+        userIds: recipientUserIds,
+        type: "REQUEST",
+        title: "Car start request",
+        body: `Approval needed for vehicle ${vehicleId} (${Math.round(
+          alcoholLevel
+        )}% alcohol).`,
+        data: {
+          requestId: request._id.toString(),
+          ownerId: ownerId.toString(),
+          vehicleId,
+          alcoholLevel: Math.round(alcoholLevel),
+          expiresAt: request.expiresAt?.toISOString?.() ?? "",
+        },
+      });
+    } catch {
+      // ignore push failures
+    }
+  }
 
   return request;
 };
